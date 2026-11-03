@@ -1,0 +1,15 @@
+# Showcase fork only (never part of an upstream pull request).
+version: 1
+app:
+  install: >-
+    { command -v yarn >/dev/null || { npm install --prefix /tmp/yarn1 yarn@1.22.22 && export PATH=/tmp/yarn1/node_modules/.bin:$PATH; }; }
+    && yarn install --frozen-lockfile --production=false
+    && (cd packages/docs && NODE_ENV=production npx storybook build -c .storybook-demo -o demo_storybook --quiet)
+  start: python3 -m http.server {port} --bind 0.0.0.0 --directory packages/docs/demo_storybook
+  url: http://localhost:{port}
+  readyPath: /iframe.html?id=demo-dropdown--multi-searchable&viewMode=story
+  readyStatus: 200
+  runtime: node20
+demo:
+  maxVideos: 1
+  beforePass: false
